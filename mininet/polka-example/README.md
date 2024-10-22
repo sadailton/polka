@@ -1,10 +1,26 @@
 # PolKA - Polynomial Key-based Architecture for Source Routing
+> [!NOTE]
+>
+> - Sistema Operacional: Ubuntu 22.04
+> 
+> - Python 3.10 (versão do repositório oficial do Ubuntu)
 
 ## 1) Preparing the environment
 
+Install the mininet:
+```bash
+$ sudo apt install mininet
+```
+To install the bmv2 switch, create a file with the content below:
+```bash
+#!/bin/bash
+. /etc/os-release
+
+```
+
 To compile the P4 PolKA codes, you have to perform the following command:
 
-```sh
+```bash
 wifi@wifi-virtualbox:~$ cd polka/mininet/polka-example/polka
 
 wifi@wifi-virtualbox: polka$ make
@@ -16,7 +32,7 @@ This is to compile the PolKA P4 codes for edge and core nodes.
 
 Installing the polka library by using PIP
 
-```sh
+```bash
 wifi@wifi-virtualbox:~/polka/mininet$ python3 -m pip install polka-routing --user
 ```
 
@@ -107,7 +123,7 @@ Poly (hex):  0x52456cf7f177
 
 After generating the route-ID for each path, we have to add the appropriate route-ID related to the destination. For instance, to the destination "h3", the following line in "e1" (edge node 1) must be modified as follows:
 
-```sh
+```bash
 wifi@wifi-virtualbox:~/polka/mininet$ cd polka/config/
 wifi@wifi-virtualbox:~/polka/mininet/polka/config$ cat e1-commands.txt
 ```
@@ -116,7 +132,7 @@ wifi@wifi-virtualbox:~/polka/mininet/polka/config$ cat e1-commands.txt
 
 Edit the file "e1-commands.txt" and modify the route-ID to the destination "h3" (10.0.3.3/32) as follows:
 
-```sh
+```bash
 table_set_default tunnel_encap_process_sr tdrop
 table_add tunnel_encap_process_sr add_sourcerouting_header 10.0.1.11/32 => 3 0 00:00:00:00:01:0b 0
 table_add tunnel_encap_process_sr add_sourcerouting_header 10.0.1.1/32 => 1 0 00:00:00:00:01:01 0
@@ -134,12 +150,12 @@ table_add tunnel_encap_process_sr add_sourcerouting_header 10.0.10.10/32 => 2 1 
 
 As an outcome, the route-ID to the destination "h3" is equal "103941321831683".  For the route-ID from "h3" to "h1", we have to modify the "e3-commands.txt" file as follows:
 
-```sh
+```bash
 wifi@wifi-virtualbox:~/polka/mininet$ cd polka/config/
 wifi@wifi-virtualbox:~/polka/mininet/polka/config$ cat e3-commands.txt
 ```
 
-```sh
+```bash
 table_set_default tunnel_encap_process_sr tdrop
 table_add tunnel_encap_process_sr add_sourcerouting_header 10.0.1.1/32 => 2 1 00:00:00:00:01:01 90458134409591
 ```
@@ -155,6 +171,6 @@ This test explore a linear topology as shown in the figure below:
 
 To create the topology by using Mininet, we have to perform the following command:
 
-```sh
+```bash
 wifi@wifi-virtualbox:~/polka/mininet$ sudo python3 run_linear_topology.py
 ```
