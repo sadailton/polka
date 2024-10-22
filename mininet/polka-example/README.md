@@ -11,31 +11,53 @@ Install the mininet:
 ```bash
 $ sudo apt install mininet
 ```
-To install the bmv2 switch, create a file with the content below:
+To install the bmv2 switch, create a file, named `install_bmv2.sh` for exampple, with the content below:
 ```bash
 #!/bin/bash
 . /etc/os-release
+echo "deb http://download.opensuse.org/repositories/home:/p4lang/xUbuntu_${VERSION_ID}/ /" | sudo tee /etc/apt/sources.list.d/home:p4lang.list
+curl -fsSL "https://download.opensuse.org/repositories/home:p4lang/xUbuntu_${VERSION_ID}/Release.key" | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_p4lang.gpg > /dev/null
+sudo apt update
+sudo apt install p4lang-bmv2
+```
 
+Execute the file:
+```bash
+$ source install_bmv2.sh
+```
+
+Install the P4 compiler and other dependencies:
+```bash
+$ sudo apt install p4lang-p4c python3-venv make git
+```
+
+Create a python virtual environment and activate it:
+```bash
+$ python3 -m venv .venv-polka
+$ source .venv-polka/bin/activate
+```
+
+Clone this repository:
+```bash
+(.venv-polka)$ git clone https://github.com/nerds-ufes/polka.git
 ```
 
 To compile the P4 PolKA codes, you have to perform the following command:
 
 ```bash
-wifi@wifi-virtualbox:~$ cd polka/mininet/polka-example/polka
-
-wifi@wifi-virtualbox: polka$ make
+(.venv-polka)$ cd polka/mininet/polka-example/polka
+(.venv-polka)$ make
 ```
 Note that for each mofification, we have to recompile by using the previous command.
 This is to compile the PolKA P4 codes for edge and core nodes. 
 
 ## 2) Generating a route-ID  
 
-Installing the polka library by using PIP
+Installing the polka library and its requirements by using PIP
 
 ```bash
-wifi@wifi-virtualbox:~/polka/mininet$ python3 -m pip install polka-routing --user
+(.venv-polka)$ pip install -r requirements.txt
 ```
-
 
 Considering that reducible polynomials were already calculated, we can see the list "s" with node-ID definition for each node. Hence, as the first step, we have to set the transmission state for all of them. Therefore, the route-ID is a composition of a set of node-ID and transmission state.
 
@@ -98,8 +120,8 @@ if __name__ == '__main__':
 
 Hence, to calculate the route-ID, we have to perform the script as follows:
 
-```sh
-wifi@wifi-virtualbox:~/polka/mininet$ python3 calc_routeid.py
+```bash
+(.venv-polka)$ python3 calc_routeid.py
 Insering irred poly (node-ID)
 From h1 to h3 ====
 S=  [[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1], [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1], [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1]]
